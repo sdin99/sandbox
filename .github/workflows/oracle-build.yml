@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'oracle-db/**'
-      - '.github/workflows/build-oracle.yml'
+      - '.github/workflows/oracle-build.yml'
   workflow_dispatch:
 
 env:
