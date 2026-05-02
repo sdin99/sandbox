@@ -66,7 +66,8 @@ jobs:
       # 스크립트가 이미 빌드했으므로, 태그만 새로 입혀서 push 합니다.
       - name: Push Image to GHCR
         run: |
-          for tag in ${{ steps.meta.outputs.tags }}; do
+          TAGS_JSON='${{ steps.meta.outputs.json }}'
+          for tag in $(echo $TAGS_JSON | jq -r '.tags[]'); do
             docker tag oracle/database:21.3.0-xe $tag
             docker push $tag
           done
