@@ -22,10 +22,12 @@ spec:
         image: ghcr.io/sdin99/sandbox-ollama:latest
         resources:
           requests:
-            memory: "4Gi"
+            nvidia.com/gpu: 1
+            memory: "8Gi"
             cpu: "2"
           limits:
-            memory: "8Gi"
+            nvidia.com/gpu: 1
+            memory: "12Gi"
             cpu: "4"
         ports:
         - containerPort: 11434
