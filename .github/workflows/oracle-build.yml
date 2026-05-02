@@ -1,0 +1,72 @@
+name: Build Oracle Database Image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'oracle-db/**'
+      - '.github/workflows/build-oracle.yml'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  # 사용자님의 스타일대로 이미지 이름을 설정합니다.
+  IMAGE_NAME: ${{ github.repository_owner }}/oracle-db
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 1. 빌드 속도를 위한 Buildx 설정 (sdin99님 스타일)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 2. GHCR 로그인
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. 2.3GB RPM 파일 다운로드 (Oracle 공식 링크)
+      - name: Download Oracle XE RPM
+        run: |
+          cd oracle-db/dockerfiles/21.3.0
+          wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+          https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol7.x86_64.rpm
+
+      # 4. Oracle 빌드 스크립트 실행
+      # 이 스크립트가 실행되면 로컬에 'oracle/database:21.3.0-xe' 이미지가 생성됩니다.
+      - name: Build Oracle Image using script
+        run: |
+          cd oracle-db/dockerfiles
+          chmod +x buildContainerImage.sh
+          ./buildContainerImage.sh -v 21.3.0 -x
+
+      # 5. 메타데이터 생성 (태그 관리)
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=21.3.0-xe
+            type=raw,value=latest
+            type=sha,prefix=sha-,format=short
+
+      # 6. 생성된 이미지를 GHCR 태그로 변환 및 푸시
+      # 스크립트가 이미 빌드했으므로, 태그만 새로 입혀서 push 합니다.
+      - name: Push Image to GHCR
+        run: |
+          for tag in ${{ steps.meta.outputs.tags }}; do
+            docker tag oracle/database:21.3.0-xe $tag
+            docker push $tag
+          done
