@@ -39,13 +39,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webui-service
+  name: webui
   namespace: sandbox
 spec:
   type: NodePort
   ports:
   - port: 80
-    target_port: 8080
+    targetPort: 8080
     nodePort: 30080
   selector:
     app: open-webui

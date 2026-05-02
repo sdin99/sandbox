@@ -86,7 +86,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: oracle-service
+  name: oracle-db
   namespace: sandbox
   labels:
     app: oracle-xe
