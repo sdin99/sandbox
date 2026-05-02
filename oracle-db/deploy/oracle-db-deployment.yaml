@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oracle-xe-oradata
+  namespace: sandbox
+  labels:
+    app: oracle-xe
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oracle-xe-config
+  namespace: sandbox
+  labels:
+    app: oracle-xe
+data:
+  ORACLE_SID: "XE"
+  ORACLE_CHARACTERSET: "AL32UTF8"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-xe
+  namespace: sandbox
+  labels:
+    app: oracle-xe
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: oracle-xe
+  template:
+    metadata:
+      labels:
+        app: oracle-xe
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull
+      securityContext:
+        runAsUser: 54321
+        fsGroup: 54321
+      containers:
+        - name: oracle
+          image: ghcr.io/sdin99/oracle-db:21.3.0-xe
+          # command: ["/bin/bash", "-c"]
+          # args: ["sleep infinity"]
+          ports:
+            - containerPort: 1521
+              name: oracle-listener
+          env:
+            - name: ORACLE_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: oracle-db-secret
+                  key: ORACLE_PWD
+          envFrom:
+            - configMapRef:
+                name: oracle-xe-config
+          resources:
+            requests:
+              memory: "2Gi"
+            limits:
+              memory: "4Gi"
+          volumeMounts:
+            - name: oradata
+              mountPath: /opt/oracle/oradata
+          readinessProbe:
+            exec:
+              command: ["/bin/bash", "-c", "/opt/oracle/checkDBStatus.sh"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
+      volumes:
+        - name: oradata
+          persistentVolumeClaim:
+            claimName: oracle-xe-oradata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-service
+  namespace: sandbox
+  labels:
+    app: oracle-xe
+spec:
+  ports:
+    - port: 1521
+      targetPort: 1521
+  selector:
+    app: oracle-xe

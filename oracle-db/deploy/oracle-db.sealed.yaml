@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: oracle-db-secret
+  namespace: sandbox
+spec:
+  encryptedData:
+    ORACLE_PWD: AgAWDFl9EcZdAGAjbP+TtQ1uPMpmy+xm2JVxjOhNI6ZJNV50RLsOZ9ngjnThboEZZB1vyzRM2tvS5QK8e/wQuW9EufiTSzzzgoFgnMkydILUcmvddm6F1peoiwF05lfohM9aEg6G61p+ZOzb3nv+WF6eVFW7O8MCtDVlSWJQ985tPjP8shWw8rNNHuPMmJWtNgsN6Kg+rvARLVVWWUvo1N1ihDexVxbqe4/YtC6BIK+a0V2ErrWAz4RgnL5vJs4POWVCsgbnDtCehGC4KDhahK+uHH5LcyS192sgPEvrtNpPzDIwY2P6/MXTn9qqyzBuqyIyPcdq6fG8042Ijbvu6isYDcACh0MGaEBGsmkufea51rHl9nGo+uKGTHjg8jkoN+WxG9ubLsNOZEBICtQkVIB0RuR0Wbop597PDkOlUmokdBo3UpjQAos8d0yij3/qza4T+hUHe9TKjUYskGAKhiWWii6m4UfgbS6tIs+gxEOZyhIvLz93Eq6wEzq0IS0K8KqjN+/8DeYB7AY56RHxyWeS40TEbe2I/xYWv5ThEwlBfrWko/vhz9MDTCu+aRgq3Ct12bXWHHSipcFgoPZX+gBdkcQo+Hg4jzREcYTXSCu1wFys6yPdRCB0w5eGKPKxX+HYHF/Ms7zds5L8LhHiEM18R5Sa8zttlqqWiy/hARi/ja1Gus3PAD1e7XpfHT23s4oM3KLvK0gt7eU=
+  template:
+    metadata:
+      name: oracle-db-secret
+      namespace: sandbox

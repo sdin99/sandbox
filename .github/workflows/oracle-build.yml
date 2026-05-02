@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'oracle-db/**'
+      - 'oracle-db/dockerfiles/**'
       - '.github/workflows/oracle-build.yml'
   workflow_dispatch:
 

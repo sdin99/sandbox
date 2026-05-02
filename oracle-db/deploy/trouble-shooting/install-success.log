@@ -1,0 +1,113 @@
+Configuring Oracle Database XE.
+Enter SYS user password:
+***********
+Enter SYSTEM user password:
+************
+Enter PDBADMIN User Password:
+***********
+Prepare for db operation
+7% complete
+Copying database files
+29% complete
+Creating and starting Oracle instance
+30% complete
+33% complete
+37% complete
+40% complete
+43% complete
+Completing Database Creation
+47% complete
+50% complete
+Creating Pluggable Databases
+54% complete
+71% complete
+Executing Post Configuration Actions
+93% complete
+Running Custom Scripts
+100% complete
+Database creation complete. For details check the logfiles at:
+ /opt/oracle/cfgtoollogs/dbca/XE.
+Database Information:
+Global Database Name:XE
+System Identifier(SID):XE
+Look at the log file "/opt/oracle/cfgtoollogs/dbca/XE/XE.log" for further details.
+
+Connect to Oracle Database using one of the connect strings:
+     Pluggable database: oracle-xe-6658468467-wg2nz/XEPDB1
+     Multitenant container database: oracle-xe-6658468467-wg2nz
+Use https://localhost:5500/em to access Oracle Enterprise Manager for Oracle Database XE
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Sat May 2 16:26:35 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL>
+System altered.
+
+SQL>
+System altered.
+
+SQL>
+Pluggable database altered.
+
+SQL>
+PL/SQL procedure successfully completed.
+
+SQL> SQL>
+Session altered.
+
+SQL>
+User created.
+
+SQL>
+Grant succeeded.
+
+SQL>
+Grant succeeded.
+
+SQL>
+Grant succeeded.
+
+SQL>
+User altered.
+
+SQL> SQL> Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Sat May 2 16:26:35 2026
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL>
+PL/SQL procedure successfully completed.
+
+SQL> Disconnected from Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+The Oracle base remains unchanged with value /opt/oracle
+The Oracle base remains unchanged with value /opt/oracle
+#########################
+DATABASE IS READY TO USE!
+#########################
+The following output is now a tail of the alert.log:
+XEPDB1(3):Completed: ALTER DATABASE DEFAULT TABLESPACE "USERS"
+2026-05-02T16:26:34.687150+00:00
+ALTER PLUGGABLE DATABASE XEPDB1 SAVE STATE
+Completed: ALTER PLUGGABLE DATABASE XEPDB1 SAVE STATE
+2026-05-02T16:26:35.100238+00:00
+ALTER SYSTEM SET control_files='/opt/oracle/oradata/XE/control01.ctl' SCOPE=SPFILE;
+2026-05-02T16:26:35.107831+00:00
+ALTER SYSTEM SET local_listener='' SCOPE=BOTH;
+ALTER PLUGGABLE DATABASE XEPDB1 SAVE STATE
+Completed: ALTER PLUGGABLE DATABASE XEPDB1 SAVE STATE
