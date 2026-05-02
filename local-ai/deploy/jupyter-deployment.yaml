@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-lab
+  namespace: sandbox
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: jupyter
+        image: pytorch/pytorch:latest # 또는 학습 전용 이미지
+        command: ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--NoWebBrowser.token=''"]
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "4"
+          limits:
+            memory: "12Gi"
+            cpu: "6"
+        volumeMounts:
+        - name: data
+          mountPath: /workspace
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: ollama-data-pvc
