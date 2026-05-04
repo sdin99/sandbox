@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lobechat
+  namespace: sandbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lobechat
+  template:
+    metadata:
+      labels:
+        app: lobechat
+    spec:
+      containers:
+      - name: lobechat
+        image: lobehub/lobe-chat:latest
+        ports:
+        - containerPort: 3210
+        env:
+        - name: OLLAMA_PROXY_URL
+          value: "http://ollama:11434"
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lobechat
+  namespace: sandbox
+spec:
+  type: NodePort
+  selector:
+    app: lobechat
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3210
+    nodePort: 32100

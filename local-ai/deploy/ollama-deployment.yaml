@@ -7,6 +7,8 @@ metadata:
     app: ollama
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: ollama
@@ -23,11 +25,11 @@ spec:
         resources:
           requests:
             nvidia.com/gpu: 1
-            memory: "8Gi"
+            memory: "36Gi"
             cpu: "2"
           limits:
             nvidia.com/gpu: 1
-            memory: "12Gi"
+            memory: "36Gi"
             cpu: "4"
         ports:
         - containerPort: 11434
