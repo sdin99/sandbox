@@ -1,0 +1,635 @@
+<title>자산관리 MCP 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F6F8F9;
+    --surface: #FFFFFF;
+    --ink: #16232A;
+    --muted: #5A6B74;
+    --line: #D9E2E7;
+    --accent: #0E7490;
+    --accent-soft: #E3F0F3;
+    --warn: #92600A;
+    --warn-soft: #FAF1DE;
+    --code-bg: #EEF3F5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1518;
+      --surface: #151F24;
+      --ink: #E2EAEE;
+      --muted: #8CA0AA;
+      --line: #263740;
+      --accent: #53C9DB;
+      --accent-soft: #123540;
+      --warn: #E3B45B;
+      --warn-soft: #2E2411;
+      --code-bg: #1B272D;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1518;
+    --surface: #151F24;
+    --ink: #E2EAEE;
+    --muted: #8CA0AA;
+    --line: #263740;
+    --accent: #53C9DB;
+    --accent-soft: #123540;
+    --warn: #E3B45B;
+    --warn-soft: #2E2411;
+    --code-bg: #1B272D;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.7;
+    font-size: 15.5px;
+  }
+  .page { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header.doc-head { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 40px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 10px;
+  }
+  h1 {
+    font-size: 34px; font-weight: 700; line-height: 1.25;
+    margin: 0 0 12px; text-wrap: balance;
+  }
+  .lede { color: var(--muted); max-width: 62ch; margin: 0; }
+  .meta {
+    display: flex; gap: 18px; flex-wrap: wrap; margin-top: 18px;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--muted);
+  }
+  .meta span b { color: var(--ink); font-weight: 500; }
+
+  h2 {
+    font-size: 21px; font-weight: 700; margin: 56px 0 14px;
+    padding-top: 24px; border-top: 1px solid var(--line);
+    text-wrap: balance;
+  }
+  h2 .no {
+    font-family: "IBM Plex Mono", monospace; font-size: 14px;
+    color: var(--accent); margin-right: 10px; font-weight: 500;
+  }
+  h3 { font-size: 16.5px; font-weight: 600; margin: 28px 0 8px; }
+  p { margin: 0 0 14px; max-width: 70ch; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; max-width: 68ch; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--accent); }
+
+  code {
+    font-family: "IBM Plex Mono", monospace; font-size: .88em;
+    background: var(--code-bg); border-radius: 4px; padding: 1px 5px;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; overflow-x: auto; margin: 0 0 16px;
+    font-size: 13px; line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  figure { margin: 24px 0 28px; }
+  .fig-frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 20px 16px; overflow-x: auto;
+  }
+  .fig-frame svg { display: block; margin: 0 auto; max-width: 100%; height: auto; min-width: 640px; color: var(--ink); }
+  /* SVG 텍스트 기본 fill은 검정 — fill 미지정 텍스트가 다크 테마에서 안 보이지 않게 테마 색으로 */
+  .fig-frame svg text:not([fill]) { fill: currentColor; }
+  figcaption {
+    font-size: 13px; color: var(--muted); margin-top: 10px; max-width: 70ch;
+  }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  .table-wrap { overflow-x: auto; margin: 0 0 18px; }
+  table {
+    border-collapse: collapse; width: 100%; font-size: 14px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; background: var(--code-bg);
+  }
+  tr:last-child td { border-bottom: none; }
+  td code { white-space: nowrap; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted);
+    white-space: nowrap;
+  }
+  .tag.read  { color: var(--accent); border-color: var(--accent); }
+  .tag.write { color: var(--warn); border-color: var(--warn); }
+
+  .callout {
+    border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+    padding: 14px 18px; margin: 18px 0; max-width: 74ch;
+  }
+  .callout.warn { background: var(--warn-soft); border-color: var(--warn); }
+  .callout.info { background: var(--accent-soft); border-color: var(--accent); }
+  .callout .label {
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: .12em;
+    text-transform: uppercase; display: block; margin-bottom: 6px;
+  }
+  .callout.warn .label { color: var(--warn); }
+  .callout.info .label { color: var(--accent); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 28px; position: relative; }
+  .checklist li::before {
+    content: ""; position: absolute; left: 0; top: 6px;
+    width: 14px; height: 14px; border: 1.5px solid var(--accent); border-radius: 3px;
+  }
+
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+<header class="doc-head">
+  <p class="eyebrow">Internal Engineering Guide</p>
+  <h1>자산관리 MCP 가이드</h1>
+  <p class="lede">사내 AI 에이전트가 자산 DB(HW·WAS·DB·SAP)를 조회·취합·반영하고, DRM 문서를 사내 AI로 해제·분석하도록 하는 MCP 서버 2종의 아키텍처와 구현 가이드.</p>
+  <div class="meta">
+    <span>스택 <b>TypeScript · @modelcontextprotocol/sdk · Express</b></span>
+    <span>전송 <b>Streamable HTTP (stateless)</b></span>
+    <span>템플릿 <b>sandbox/asset-mcp-template</b></span>
+  </div>
+</header>
+
+<h2 id="overview"><span class="no">1</span>전체 구성</h2>
+
+<p>역할이 다른 MCP를 둘로 나누되, <b>같은 프로세스에 두어</b> 공유 파일 저장소를 통해 파일을 주고받는다. 배포는 두 형태 중 택 1 — 코드는 동일하다.</p>
+<ul>
+  <li><b>단독 서비스</b> — <code>standalone.ts</code>를 엔트리로 별도 서비스로 띄운다 (Dockerfile 포함, <code>docker build</code> 후 실행). 기존 API 서버를 수정할 수 없거나 배포를 분리하고 싶을 때. 이 경우 아래 그림의 "기존 API 서버" 박스가 "MCP 서비스"가 되고, 다운로드 라우트도 이 서비스가 서빙하므로 <code>ASSET_MCP_DOWNLOAD_BASE_URL</code>을 이 서비스의 외부 주소로 설정한다.</li>
+  <li><b>기존 API 서버에 얹기</b> — 기존 Express 앱 부트스트랩에 <code>attachAllMcp(app)</code> 한 줄 추가. 배포물이 하나로 유지된다.</li>
+</ul>
+
+<figure>
+  <div class="fig-frame">
+  <svg viewBox="0 0 880 470" role="img" aria-label="사내 AI 에이전트가 기존 API 서버 안의 db-mcp와 ai-mcp를 호출하고, db-mcp는 자산 DB에, ai-mcp는 다른 사내 AI에 연결되며, 두 MCP는 공유 파일 저장소를 통해 file_id로 파일을 주고받는 구성도" font-family="IBM Plex Sans KR, sans-serif" font-size="13">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+      </marker>
+      <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+      </marker>
+    </defs>
+
+    <!-- 사용자 -->
+    <rect x="20" y="60" width="130" height="52" rx="8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="85" y="82" text-anchor="middle" font-weight="600">사용자</text>
+    <text x="85" y="100" text-anchor="middle" font-size="11.5" opacity=".65">엑셀 업로드·질문</text>
+
+    <!-- 에이전트 -->
+    <rect x="20" y="200" width="130" height="60" rx="8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="85" y="226" text-anchor="middle" font-weight="600">사내 AI 에이전트</text>
+    <text x="85" y="244" text-anchor="middle" font-size="11.5" opacity=".65">MCP 클라이언트</text>
+
+    <line x1="85" y1="112" x2="85" y2="198" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+    <text x="96" y="160" font-size="11.5" opacity=".75">대화</text>
+
+    <!-- 기존 API 서버 컨테이너 -->
+    <rect x="270" y="36" width="360" height="398" rx="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <text x="288" y="62" font-weight="700" font-size="14">기존 API 서버 <tspan font-weight="400" font-size="12" opacity=".65">(Node · Express · 단일 프로세스)</tspan></text>
+
+    <!-- db-mcp -->
+    <rect x="300" y="86" width="300" height="66" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+    <text x="316" y="112" font-weight="600" fill="var(--accent)">db-mcp</text>
+    <text x="316" y="132" font-family="IBM Plex Mono, monospace" font-size="11.5">POST /mcp/db</text>
+    <text x="596" y="112" text-anchor="end" font-size="11.5" opacity=".7">조회·집계·엑셀·반영</text>
+
+    <!-- ai-mcp -->
+    <rect x="300" y="176" width="300" height="66" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+    <text x="316" y="202" font-weight="600" fill="var(--accent)">ai-mcp</text>
+    <text x="316" y="222" font-family="IBM Plex Mono, monospace" font-size="11.5">POST /mcp/ai</text>
+    <text x="596" y="202" text-anchor="end" font-size="11.5" opacity=".7">DRM 해제·분석 위임</text>
+
+    <!-- 파일 저장소 -->
+    <rect x="300" y="282" width="300" height="58" rx="8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <text x="450" y="305" text-anchor="middle" font-weight="600">공유 파일 저장소</text>
+    <text x="450" y="324" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11.5" opacity=".7">files.ts · file_id → 파일</text>
+
+    <!-- 다운로드 라우트 -->
+    <rect x="300" y="366" width="300" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.2"/>
+    <text x="450" y="386" text-anchor="middle" font-weight="600" font-size="12.5">다운로드 라우트</text>
+    <text x="450" y="403" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" opacity=".7">GET /mcp-downloads/:file_id</text>
+
+    <!-- MCP 내부 화살표: file_id -->
+    <line x1="420" y1="152" x2="420" y2="280" stroke="var(--accent)" stroke-width="1.3" marker-end="url(#arrA)" marker-start="url(#arrA)"/>
+    <line x1="480" y1="242" x2="480" y2="280" stroke="var(--accent)" stroke-width="1.3" marker-end="url(#arrA)" marker-start="url(#arrA)"/>
+    <text x="430" y="266" font-size="11.5" fill="var(--accent)">file_id 저장/조회</text>
+
+    <!-- 에이전트 → MCP -->
+    <line x1="150" y1="215" x2="298" y2="122" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+    <line x1="150" y1="230" x2="298" y2="208" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+    <text x="182" y="152" font-size="11.5" opacity=".75">tools/call</text>
+    <text x="182" y="170" font-size="11.5" opacity=".75" font-family="IBM Plex Mono, monospace" font-size="10.5">streamable-http</text>
+
+    <!-- 자산 DB -->
+    <rect x="700" y="86" width="160" height="66" rx="8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="780" y="112" text-anchor="middle" font-weight="600">자산 DB</text>
+    <text x="780" y="132" text-anchor="middle" font-size="11.5" opacity=".65">HW · WAS · DB · SAP</text>
+    <line x1="600" y1="119" x2="698" y2="119" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+    <text x="649" y="110" text-anchor="middle" font-size="11.5" opacity=".75">SQL 조회/반영</text>
+
+    <!-- 다른 사내 AI -->
+    <rect x="700" y="176" width="160" height="66" rx="8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="780" y="202" text-anchor="middle" font-weight="600">다른 사내 AI</text>
+    <text x="780" y="222" text-anchor="middle" font-size="11.5" opacity=".65">DRM 해제 · 문서 분석</text>
+    <line x1="600" y1="209" x2="698" y2="209" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+    <text x="649" y="200" text-anchor="middle" font-size="11.5" opacity=".75">HTTP API</text>
+
+    <!-- 사용자 다운로드 -->
+    <path d="M 85 260 L 85 440 L 260 440 L 260 392 L 298 392" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+    <text x="120" y="432" font-size="11.5" opacity=".75">브라우저로 파일 다운로드</text>
+  </svg>
+  </div>
+  <figcaption><b>전체 구성.</b> 에이전트는 MCP 두 개를 각각 등록해서 쓴다. 파일(엑셀, DRM 해제본)은 서버 안의 공유 저장소에만 두고, 툴 사이에서는 <code>file_id</code> 문자열만 오간다. 사용자는 다운로드 라우트로 결과 파일을 받는다.</figcaption>
+</figure>
+
+<h3>왜 MCP를 둘로 나누나</h3>
+<ul>
+  <li><b>권한 경계</b> — db-mcp는 자산 DB에 쓰기까지 가능한 서버, ai-mcp는 DRM 해제라는 민감 기능을 가진 서버다. 분리하면 인증 정책·감사·접근 허용 대상을 서로 다르게 걸 수 있다.</li>
+  <li><b>변경 주기</b> — DB 스키마 변경과 사내 AI API 변경은 서로 무관하다. 툴 정의가 분리되어 있으면 한쪽 수정이 다른 쪽에 영향을 주지 않는다.</li>
+  <li><b>에이전트 관점</b> — 툴 목록이 역할별로 묶여 있어 에이전트가 툴을 고르기 쉽다.</li>
+</ul>
+<p>단, 두 MCP는 <b>같은 프로세스(또는 같은 볼륨)</b>에 있어야 공유 파일 저장소가 성립한다. 완전히 별도 서비스로 분리하는 시점에는 <code>files.ts</code>를 NFS나 오브젝트 스토리지로 교체한다.</p>
+
+<h2 id="mcp-basics"><span class="no">2</span>MCP는 어떻게 동작하나 — 5분 기초</h2>
+
+<p>MCP(Model Context Protocol)는 <b>AI(LLM)에게 외부 기능을 "툴" 형태로 제공하는 표준 프로토콜</b>이다. 서버는 툴 목록을 내놓고, 에이전트의 LLM이 대화 맥락을 보고 어떤 툴을 어떤 인자로 호출할지 결정한다. 동작 사이클은 다섯 단계다.</p>
+
+<figure>
+  <div class="fig-frame">
+  <svg viewBox="0 0 860 260" role="img" aria-label="사용자 질문을 받은 에이전트 LLM이 연결 시 받아둔 툴 목록을 근거로 tools/call을 보내고, MCP 서버가 실행한 JSON 결과를 받아 반복하다가 최종 답변하는 사이클" font-family="IBM Plex Sans KR, sans-serif" font-size="13">
+    <defs>
+      <marker id="barr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+      </marker>
+    </defs>
+
+    <!-- 사용자 -->
+    <rect x="20" y="104" width="120" height="60" rx="8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="80" y="138" text-anchor="middle" font-weight="600">사용자</text>
+
+    <!-- 에이전트 -->
+    <rect x="270" y="96" width="190" height="76" rx="8" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="365" y="126" text-anchor="middle" font-weight="600">AI 에이전트 (LLM)</text>
+    <text x="365" y="146" text-anchor="middle" font-size="11.5" opacity=".65">툴 선택·인자 구성은 LLM이 판단</text>
+
+    <!-- MCP 서버 -->
+    <rect x="620" y="96" width="220" height="76" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+    <text x="730" y="126" text-anchor="middle" font-weight="600" fill="var(--accent)">MCP 서버</text>
+    <text x="730" y="146" text-anchor="middle" font-size="11.5" opacity=".7">db-mcp · ai-mcp — 실행은 여기서</text>
+
+    <!-- 0. tools/list -->
+    <line x1="620" y1="62" x2="462" y2="62" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#barr)"/>
+    <text x="541" y="42" text-anchor="middle" font-size="11.5" opacity=".8">연결 시 1회 — tools/list</text>
+    <text x="541" y="56" text-anchor="middle" font-size="11" opacity=".65">툴 목록 + 입력 스키마(JSON Schema) + 설명</text>
+
+    <!-- 1 질문 -->
+    <line x1="140" y1="118" x2="268" y2="118" stroke="currentColor" stroke-width="1.2" marker-end="url(#barr)"/>
+    <text x="204" y="110" text-anchor="middle" font-size="11.5">① 질문</text>
+
+    <!-- 2 tools/call -->
+    <line x1="460" y1="118" x2="618" y2="118" stroke="currentColor" stroke-width="1.2" marker-end="url(#barr)"/>
+    <text x="539" y="110" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5">② tools/call — list_assets({..})</text>
+
+    <!-- 3 결과 -->
+    <line x1="618" y1="152" x2="460" y2="152" stroke="currentColor" stroke-width="1.2" marker-end="url(#barr)"/>
+    <text x="539" y="172" text-anchor="middle" font-size="11.5">③ 실행 결과 (JSON)</text>
+
+    <!-- 4 반복 -->
+    <text x="539" y="204" text-anchor="middle" font-size="11.5" opacity=".7">④ 결과를 보고 필요한 만큼 ②↔③ 반복</text>
+
+    <!-- 5 답변 -->
+    <line x1="268" y1="152" x2="140" y2="152" stroke="currentColor" stroke-width="1.2" marker-end="url(#barr)"/>
+    <text x="204" y="172" text-anchor="middle" font-size="11.5">⑤ 최종 답변</text>
+  </svg>
+  </div>
+  <figcaption><b>MCP 동작 사이클.</b> 툴 목록과 입력 스키마는 연결 시 한 번 전달되고, 이후 LLM이 맥락에 맞는 툴 호출을 반복하다가 답을 만든다.</figcaption>
+</figure>
+
+<p>처음 접할 때 헷갈리기 쉬운 포인트 세 가지:</p>
+<ul>
+  <li><b>LLM은 코드를 실행하지 않는다.</b> LLM은 "이 툴을 이 인자로 호출하고 싶다"는 JSON을 만들 뿐이고, 실행은 전부 우리 MCP 서버가 한다. 그래서 입력 검증·권한·감사는 100% 서버 책임이다 — LLM이 이상한 인자를 만들 수 있다고 전제하고 짜야 한다.</li>
+  <li><b>툴 정의 = 이름 + description + inputSchema.</b> 이 세 가지가 에이전트가 아는 전부다. DB 스키마·테이블 구조는 서버 구현 세부사항이라 에이전트에게 보이지 않고, 보일 필요도 없다.</li>
+  <li><b>잘못된 인자는 자동으로 튕긴다.</b> zod 스키마에 안 맞는 호출(없는 enum 값, 타입 불일치)은 SDK가 검증 에러로 돌려보내고, 에이전트는 에러 메시지를 읽고 고쳐서 재시도한다. 스키마를 촘촘히 쓸수록 에이전트가 헤매지 않는다.</li>
+</ul>
+
+<h2 id="flow"><span class="no">3</span>대표 시나리오 — DRM 엑셀 취합·반영</h2>
+
+<p>이 시스템의 핵심 흐름이다. 파일이 에이전트 컨텍스트를 거치지 않고 <code>file_id</code>로 이어지는 것, 그리고 DB 반영이 반드시 dry-run을 거치는 것이 포인트다.</p>
+
+<figure>
+  <div class="fig-frame">
+  <svg viewBox="0 0 880 560" role="img" aria-label="에이전트가 ai-mcp로 DRM을 해제해 file_id를 받고, 같은 file_id로 분석과 DB 반영(dry-run 후 apply)을 이어가는 시퀀스 다이어그램" font-family="IBM Plex Sans KR, sans-serif" font-size="13">
+    <defs>
+      <marker id="sarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+      </marker>
+      <marker id="sarrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+      </marker>
+    </defs>
+
+    <!-- 라이프라인 헤더 -->
+    <rect x="40" y="20" width="150" height="40" rx="7" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="115" y="45" text-anchor="middle" font-weight="600">AI 에이전트</text>
+    <rect x="330" y="20" width="120" height="40" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+    <text x="390" y="45" text-anchor="middle" font-weight="600" fill="var(--accent)">ai-mcp</text>
+    <rect x="560" y="20" width="120" height="40" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+    <text x="620" y="45" text-anchor="middle" font-weight="600" fill="var(--accent)">db-mcp</text>
+    <rect x="750" y="20" width="110" height="40" rx="7" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <text x="805" y="45" text-anchor="middle" font-weight="600" font-size="12.5">사내 AI</text>
+
+    <!-- 라이프라인 -->
+    <line x1="115" y1="60" x2="115" y2="540" stroke="currentColor" stroke-width="1" opacity=".35"/>
+    <line x1="390" y1="60" x2="390" y2="540" stroke="currentColor" stroke-width="1" opacity=".35"/>
+    <line x1="620" y1="60" x2="620" y2="540" stroke="currentColor" stroke-width="1" opacity=".35"/>
+    <line x1="805" y1="60" x2="805" y2="540" stroke="currentColor" stroke-width="1" opacity=".35"/>
+
+    <!-- 1. unlock -->
+    <line x1="115" y1="100" x2="388" y2="100" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="125" y="92" font-family="IBM Plex Mono, monospace" font-size="11.5">unlock_drm_excel(file_base64)</text>
+    <line x1="390" y1="130" x2="803" y2="130" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="400" y="122" font-size="11.5" opacity=".75">DRM 해제 요청</text>
+    <line x1="805" y1="160" x2="392" y2="160" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="700" y="152" font-size="11.5" opacity=".75">해제된 파일</text>
+    <line x1="390" y1="196" x2="117" y2="196" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#sarrA)"/>
+    <text x="125" y="188" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--accent)">file_id (해제본, 서버에 저장됨)</text>
+
+    <!-- 2. analyze -->
+    <line x1="115" y1="244" x2="388" y2="244" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#sarrA)"/>
+    <text x="125" y="236" font-family="IBM Plex Mono, monospace" font-size="11.5">analyze_file(<tspan fill="var(--accent)">file_id</tspan>, 지시)</text>
+    <line x1="390" y1="272" x2="803" y2="272" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="400" y="264" font-size="11.5" opacity=".75">분석 요청</text>
+    <line x1="805" y1="300" x2="392" y2="300" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <line x1="390" y1="330" x2="117" y2="330" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="125" y="322" font-size="11.5" opacity=".75">분석 요약 (+ 결과 파일 file_id)</text>
+
+    <!-- 3. import dry-run -->
+    <line x1="115" y1="382" x2="618" y2="382" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#sarrA)"/>
+    <text x="125" y="374" font-family="IBM Plex Mono, monospace" font-size="11.5">import_assets_excel(<tspan fill="var(--accent)">file_id</tspan>, apply=false)</text>
+    <line x1="620" y1="412" x2="117" y2="412" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="125" y="404" font-size="11.5" opacity=".75">변경 미리보기 (dry-run · DB 미반영)</text>
+
+    <!-- 사용자 확인 -->
+    <rect x="45" y="432" width="240" height="30" rx="6" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.1"/>
+    <text x="165" y="452" text-anchor="middle" font-size="12" fill="var(--warn)">사용자가 미리보기 확인·승인</text>
+
+    <!-- 4. apply -->
+    <line x1="115" y1="496" x2="618" y2="496" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#sarrA)"/>
+    <text x="125" y="488" font-family="IBM Plex Mono, monospace" font-size="11.5">import_assets_excel(<tspan fill="var(--accent)">file_id</tspan>, apply=true)</text>
+    <line x1="620" y1="526" x2="117" y2="526" stroke="currentColor" stroke-width="1.2" marker-end="url(#sarr)"/>
+    <text x="125" y="518" font-size="11.5" opacity=".75">반영 완료 + 감사 로그 기록</text>
+  </svg>
+  </div>
+  <figcaption><b>DRM 엑셀 반영 시퀀스.</b> base64는 사용자가 올린 원본을 처음 건넬 때 한 번만 쓰이고, 이후 모든 단계는 <code>file_id</code>로 이어진다. 검증 오류가 1건이라도 있으면 apply여도 전체를 반영하지 않는다.</figcaption>
+</figure>
+
+<div class="callout info">
+  <span class="label">file_id 방식인 이유</span>
+  <p>파일을 base64로 에이전트 컨텍스트에 태워 왕복시키면 수 MB짜리 엑셀만 돼도 토큰이 폭발한다. 파일은 서버 디스크(<code>files.ts</code>)에 두고 툴 사이에서는 짧은 <code>file_id</code> 문자열만 주고받는다. 서버가 만든 파일은 항상 <code>file_id</code> + 다운로드 URL로 반환한다.</p>
+</div>
+
+<h2 id="tools"><span class="no">4</span>툴 목록</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>MCP</th><th>툴</th><th>종류</th><th>설명</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6">db-mcp</td><td><code>list_assets</code></td><td><span class="tag read">읽기</span></td><td>필터(타입·키워드·상태) + 페이지네이션 목록 조회</td></tr>
+    <tr><td><code>get_asset</code></td><td><span class="tag read">읽기</span></td><td>자산 1건 상세</td></tr>
+    <tr><td><code>asset_summary</code></td><td><span class="tag read">읽기</span></td><td>타입별·부서별·상태별 집계</td></tr>
+    <tr><td><code>export_assets_excel</code></td><td><span class="tag read">읽기</span></td><td>조회 결과 → xlsx 생성 → file_id + 다운로드 URL</td></tr>
+    <tr><td><code>import_assets_excel</code></td><td><span class="tag write">쓰기</span></td><td>엑셀(file_id 또는 base64) → dry-run 미리보기 → <code>apply=true</code> 반영</td></tr>
+    <tr><td><code>update_asset</code></td><td><span class="tag write">쓰기</span></td><td>자산 1건 수정 + 감사 로그</td></tr>
+    <tr><td rowspan="2">ai-mcp</td><td><code>unlock_drm_excel</code></td><td><span class="tag">위임</span></td><td>DRM 파일을 사내 AI로 해제 → 해제본 file_id 반환</td></tr>
+    <tr><td><code>analyze_file</code></td><td><span class="tag">위임</span></td><td>파일을 사내 AI로 분석 → 요약 + 결과 파일 file_id</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>읽기 툴에는 <code>readOnlyHint</code>, 쓰기 툴에는 <code>destructiveHint</code>, 외부 서비스를 호출하는 툴에는 <code>openWorldHint</code> 어노테이션이 달려 있어 에이전트·클라이언트가 승인 프롬프트를 적절히 처리한다.</p>
+
+<h2 id="code"><span class="no">5</span>코드 구조와 책임 경계</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>파일</th><th>책임</th><th>사내 적용 시</th></tr></thead>
+  <tbody>
+    <tr><td><code>src/db-mcp.ts</code></td><td>자산 DB MCP — 툴 6개 정의</td><td>엑셀 헤더 매핑(<code>headerMap</code>)만 사내 양식에 맞게</td></tr>
+    <tr><td><code>src/ai-mcp.ts</code></td><td>사내 AI 위임 MCP — 툴 2개 정의</td><td>거의 수정 불필요</td></tr>
+    <tr><td><code>src/db.ts</code></td><td>DB 접근 레이어 (DAO)</td><td><b>in-memory 데모 → 실제 DB 클라이언트로 본문 교체</b> (mysql2·pg·knex·prisma 등, 함수 시그니처 유지)</td></tr>
+    <tr><td><code>src/internal-ai.ts</code></td><td>다른 사내 AI HTTP 클라이언트</td><td><b>실제 API 스펙으로 본문 교체</b> — URL·인증·multipart 여부·동기/job 여부 확인</td></tr>
+    <tr><td><code>src/files.ts</code></td><td>공유 파일 저장소 (file_id 발급·조회) + TTL 정리 스위퍼</td><td>저장 경로를 PVC 등으로, TTL 기본값이 사내 정책과 맞는지 확인</td></tr>
+    <tr><td><code>src/excel.ts</code></td><td>엑셀 생성·파싱 (exceljs)</td><td>사내 표준 양식이 있으면 template.xlsx 로드 방식으로</td></tr>
+    <tr><td><code>src/mcp-router.ts</code></td><td>Express 배선 — 인증·stateless·다운로드</td><td>사내 인증 방식에 맞게 <code>mcpAuth</code> 교체</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>핵심 원칙은 <b>경계 유지</b>다. 툴 정의(db-mcp.ts, ai-mcp.ts)는 DAO와 AI 클라이언트의 함수 시그니처만 알고 있으므로, DB 교체는 <code>db.ts</code> 안에서, 사내 AI API 스펙 반영은 <code>internal-ai.ts</code> 안에서 끝난다.</p>
+
+<h3>기존 서버에 붙이기</h3>
+<pre><code>// 기존 API 서버 부트스트랩에 두 줄
+import { attachAllMcp } from "./mcp/mcp-router.js";
+attachAllMcp(app);
+// → POST /mcp/db, POST /mcp/ai, GET /mcp-downloads/:file_id</code></pre>
+<ul>
+  <li>에이전트에는 MCP <b>두 개</b>를 등록한다: <code>https://&lt;서버&gt;/mcp/db</code>, <code>https://&lt;서버&gt;/mcp/ai</code></li>
+  <li>포트를 분리해야 하면 같은 프로세스에서 Express 앱을 하나 더 만들어 <code>attachAllMcp(mcpApp); mcpApp.listen(9000)</code></li>
+  <li>Fastify·Koa·Nest여도 원리는 같다 — POST 요청을 <code>StreamableHTTPServerTransport.handleRequest(req, res, body)</code>에 넘기면 된다 (raw req/res 필요)</li>
+</ul>
+
+<h3>stateless로 서빙하는 이유</h3>
+<p>요청마다 MCP 서버 인스턴스를 만들고 응답 후 버린다(<code>sessionIdGenerator: undefined</code>). 세션 상태가 없으므로 인스턴스를 여러 개로 스케일아웃하거나 재배포해도 에이전트 연결이 깨지지 않는다. 그 대가로 GET(SSE 알림 스트림)은 지원하지 않으며, 이 용도에서는 필요도 없다.</p>
+
+<h2 id="zod"><span class="no">6</span>내 DB에 맞게 고치기 — zod 스키마 실전</h2>
+
+<p>zod 정의 한 줄은 두 가지 일을 동시에 한다: <b>① 에이전트에게 보여줄 스키마 문서</b>(JSON Schema로 변환되어 tools/list에 실림)이자 <b>② 런타임 입력 검증</b>(안 맞는 호출은 자동 거부)이다. 그래서 "DB 스키마를 에이전트에게 알려주는 작업"은 별도 문서를 만드는 게 아니라, 아래처럼 zod와 description을 실제 스키마 의미에 맞게 채우는 것이다.</p>
+
+<h3>자주 쓰는 zod 패턴</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>패턴</th><th>의미</th><th>이럴 때</th></tr></thead>
+  <tbody>
+    <tr><td><code>z.string()</code> / <code>z.number().int()</code> / <code>z.boolean()</code></td><td>기본 타입</td><td>자유 입력 텍스트, ID, 플래그</td></tr>
+    <tr><td><code>z.enum(["HW","WAS",…])</code></td><td>유효값 제한</td><td>코드값 컬럼 — 에이전트가 목록 안에서만 고르게 강제</td></tr>
+    <tr><td><code>.optional()</code></td><td>생략 가능</td><td>필터처럼 안 줘도 되는 인자</td></tr>
+    <tr><td><code>.default(50)</code></td><td>생략 시 기본값</td><td>page_size, apply=false 같은 안전 기본값</td></tr>
+    <tr><td><code>.min(1).max(200)</code></td><td>범위 제한</td><td>페이지 크기 폭주 방지</td></tr>
+    <tr><td><code>.describe("…")</code></td><td><b>에이전트가 읽는 설명</b></td><td>모든 인자에. 값의 의미·예시·다음 행동까지</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout info">
+  <span class="label">describe가 절반이다</span>
+  <p>타입이 맞아도 의미를 모르면 에이전트는 엉뚱한 값을 넣는다. <code>.describe()</code>에는 ① 무엇인지 ② 유효값의 의미 ③ 예시를 적는다. 예: <code>.describe('수정할 필드와 값. 예: {"ownerTeam": "인프라운영팀"}')</code>. 툴 전체의 description에는 언제 이 툴을 쓰는지·다음 단계가 무엇인지까지 적는다.</p>
+</div>
+
+<h3>레시피 A — 실제 DB 컬럼 추가하기 (예: IP 주소)</h3>
+<p>자산 테이블에 <code>ip_address</code> 컬럼이 있다고 하자. 수정 지점은 정해져 있다.</p>
+<pre><code>// ① db.ts — 타입에 추가 (+ 에이전트가 수정해도 되는 컬럼이면 WRITABLE_FIELDS에도)
+export interface Asset {
+  ...
+  ipAddress: string | null;
+}
+export const WRITABLE_FIELDS = [..., "ipAddress"] as const;
+
+// ② db-mcp.ts — assetRow()에 추가 → 모든 조회·상세 응답에 노출됨
+function assetRow(a: Asset) {
+  return { ..., ip_address: a.ipAddress };
+}
+
+// ③ 필터로도 쓰고 싶으면 — filterArgs에 추가 + db.ts의 WHERE 절 반영
+const filterArgs = {
+  ...,
+  ip: z.string().optional().describe("IP 주소 부분 일치 검색. 예: '10.0.1'"),
+};
+
+// ④ 엑셀에도 넣으려면 — export의 headers/rows, import의 headerMap에 추가
+const headerMap = { ..., "IP": "ipAddress" };</code></pre>
+<p>①~② 만 하면 "조회 응답에 보이는 컬럼", ③까지 하면 "필터 가능한 컬럼", ④까지 하면 "엑셀 취합에 포함되는 컬럼"이 된다. 컬럼마다 어디까지 필요한지 정해서 그만큼만 추가하면 된다.</p>
+
+<h3>레시피 B — 비직관적 코드값 번역하기</h3>
+<p>실무 DB는 <code>status = '01'</code> 같은 코드값이 흔하다. 에이전트는 <code>01</code>이 뭔지 모르므로 enum + describe로 번역표를 준다.</p>
+<pre><code>status: z.enum(["01", "02", "09"]).optional()
+  .describe("자산 상태 코드. 01=운영중, 02=유휴, 09=폐기"),</code></pre>
+<p>응답 쪽도 마찬가지 — <code>assetRow()</code>에서 코드 그대로 주지 말고 <code>{ status: "01", status_label: "운영중" }</code>처럼 라벨을 같이 주면 에이전트가 사용자에게 바로 설명할 수 있다.</p>
+
+<h3>레시피 C — 새 툴 추가하기</h3>
+<p>툴 하나의 완전한 골격. <code>db-mcp.ts</code>의 기존 툴들 사이에 같은 패턴으로 추가하면 된다.</p>
+<pre><code>server.registerTool(
+  "툴_이름",                              // 동작 중심 소문자 스네이크케이스
+  {
+    title: "사람용 짧은 제목",
+    description: "언제 쓰는 툴인지 + 반환이 뭔지 + 다음 단계까지.",
+    inputSchema: {                        // zod 셰이프 — 자동으로 JSON Schema화
+      asset_id: z.number().int().describe("자산 ID."),
+    },
+    annotations: { readOnlyHint: true },  // 쓰기 툴이면 destructiveHint: true
+  },
+  async (args) => {                       // args는 zod 검증을 통과한 값
+    // DB 접근은 db.ts의 DAO 함수를 통해서만
+    return jsonResult({ ... });           // 실패도 throw 대신 { error: "…안내…" }
+  },
+);</code></pre>
+
+<h3>고쳤으면 — Inspector로 눈으로 확인</h3>
+<p><code>npm run dev</code> 후 <code>npx @modelcontextprotocol/inspector</code>를 띄워 <code>/mcp/db</code>에 연결하고 <b>tools/list</b>를 눌러보면, 방금 쓴 zod가 에이전트에게 어떤 JSON Schema로 보이는지 그대로 확인된다. enum 값과 describe가 의도대로 나오는지 보는 것이 스키마 작업의 마지막 단계다.</p>
+
+<h2 id="security"><span class="no">7</span>인증·보안 설계</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>레이어</th><th>장치</th><th>비고</th></tr></thead>
+  <tbody>
+    <tr><td>요청 인증</td><td><code>X-Api-Key</code> + HS256 JWT 검증 (<code>mcpAuth</code> 미들웨어, 두 MCP 공통)</td><td>미설정 시 개발 모드로 무인증 — <b>운영에서는 최소 하나 반드시 ON</b></td></tr>
+    <tr><td>호출 주체 추적</td><td>JWT <code>sub</code> → 감사 로그의 actor</td><td>DB 쓰기·DRM 해제마다 누가/무엇을/왜 기록</td></tr>
+    <tr><td>DB 쓰기 보호</td><td>수정 허용 컬럼 화이트리스트 + dry-run 2단계 + 오류 시 전체 미반영</td><td>임의 SQL 툴은 만들지 않는다</td></tr>
+    <tr><td>파일 다운로드</td><td>랜덤 토큰 파일명 + 다운로드 라우트</td><td>운영에서는 라우트에 사내 인증(SSO 쿠키 등) 추가</td></tr>
+    <tr><td>경로 조작 방지</td><td>file_id 문자셋 검증 (<code>files.ts</code>)</td><td><code>../</code> 류 차단</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>요청 헤더 — 어떻게 정해지고 누가 보내나</h3>
+
+<p>Streamable HTTP MCP는 일반 HTTP POST이므로 헤더를 자유롭게 쓸 수 있다. 핵심은 <b>헤더는 에이전트 플랫폼에 MCP를 등록할 때 설정되어 모든 호출에 고정으로 실린다</b>는 것 — LLM은 툴 인자만 만들 수 있고 헤더는 만들 수 없다. 인증 토큰이 LLM 손이 닿지 않는 곳에 있으므로 보안상 오히려 장점이다.</p>
+
+<p>헤더에 실리는 <b>값의 종류</b>에 따라 검증 방식이 결정된다. 사내 발급처에 "이 값이 무엇인지"를 먼저 확인할 것:</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>헤더 값의 종류</th><th>검증 방식</th><th>서버 설정</th></tr></thead>
+  <tbody>
+    <tr><td>고정 발급 키 (장기 유효)</td><td>허용목록 값 비교</td><td><code>MCP_API_KEYS</code> — 콤마 구분, 클라이언트별 발급 가능</td></tr>
+    <tr><td>서명된 JWT (만료·클레임 있음)</td><td>서명 검증 — <code>sub</code>가 감사 로그 actor</td><td><code>MCP_TOKEN_VERIFY_SECRET</code> + 토큰이 실리는 헤더를 <code>MCP_TOKEN_HEADER</code>로 선택 (기본 <code>authorization</code>, X-Api-Key에 토큰을 싣는 규격이면 <code>x-api-key</code>)</td></tr>
+    <tr><td>불투명(opaque) 토큰 + 만료 있음</td><td>발급처 검증 API 호출 (결과 단기 캐시)</td><td><code>mcpAuth</code> 함수 교체 필요 — 주석의 TODO 참고</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>두 검증을 다 켜면 둘 다 통과해야 한다. 에이전트 쪽 등록 예시 (Claude Code 기준 — 사내 플랫폼도 보통 등록 화면에 헤더 필드가 있다):</p>
+<pre><code>claude mcp add --transport http asset-db https://&lt;서버&gt;/mcp/db \
+  --header "X-Api-Key: &lt;발급받은 키&gt;" \
+  --header "Authorization: Bearer &lt;토큰&gt;"</code></pre>
+
+<div class="callout warn">
+  <span class="label">보안 값은 헤더로만</span>
+  <p>사용자 신원·권한 같은 보안 값은 반드시 헤더(토큰)로 받고, <b>절대 툴 인자로 받지 않는다.</b> 툴 인자는 LLM이 만드는 값이라, actor를 인자로 받는 설계는 에이전트가(또는 프롬프트 인젝션에 당한 에이전트가) 남의 이름으로 감사 로그를 남길 수 있게 한다. 다른 헤더가 필요해지면(<code>X-Employee-Id</code> 등) <code>mcp-router.ts</code>의 <code>mcpAuth</code> 함수 한 곳만 고치면 된다.</p>
+</div>
+
+<div class="callout warn">
+  <span class="label">DRM 해제 — 반드시 챙길 것</span>
+  <p><b>① 감사 이력.</b> 해제는 사내 정책상 감사 대상이다. 현재 actor·파일명 로깅까지 되어 있고, 사내 감사 체계 연동은 적용 시점에 붙인다. <b>② 해제본 보관 정책.</b> 해제된 파일은 공유 저장소에 남지만 TTL 스위퍼가 해제본은 4시간, 그 외 파일은 24시간 뒤 자동 삭제한다 — 기본값이 사내 정책과 맞는지 확인하고, 필요 시 디스크 암호화를 더한다. <b>③ 신뢰 경계.</b> 사내 AI의 분석 결과는 신뢰하지 않는 데이터로 취급한다. 분석 결과를 근거로 한 DB 반영도 반드시 db-mcp의 dry-run → 사용자 확인 경로로만 흐르게 한다.</p>
+</div>
+
+<h2 id="env"><span class="no">8</span>환경변수</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>변수</th><th>기본값</th><th>용도</th></tr></thead>
+  <tbody>
+    <tr><td><code>MCP_API_KEYS</code></td><td>(없음 = 키 검증 OFF)</td><td><code>X-Api-Key</code> 허용 키 목록 (콤마 구분)</td></tr>
+    <tr><td><code>MCP_TOKEN_VERIFY_SECRET</code></td><td>(없음 = JWT 검증 OFF)</td><td>JWT HS256 검증 시크릿</td></tr>
+    <tr><td><code>MCP_TOKEN_ISSUER</code> / <code>MCP_TOKEN_AUDIENCE</code></td><td>– / <code>asset-mcp</code></td><td>JWT 클레임 검증</td></tr>
+    <tr><td><code>MCP_TOKEN_HEADER</code></td><td><code>authorization</code></td><td>JWT가 실리는 헤더 — 사내 규격이 X-Api-Key면 <code>x-api-key</code></td></tr>
+    <tr><td><code>ASSET_MCP_EXPORT_DIR</code></td><td><code>/tmp/asset-mcp-exports</code></td><td>공유 파일 저장 경로</td></tr>
+    <tr><td><code>ASSET_MCP_DOWNLOAD_BASE_URL</code></td><td><code>http://localhost:8000</code></td><td>다운로드 URL 베이스 — <b>사용자 브라우저에서 접근 가능한 주소</b>여야 함</td></tr>
+    <tr><td><code>ASSET_MCP_FILE_TTL_HOURS</code></td><td><code>24</code></td><td>생성 파일(export 엑셀 등) 보관 시간 — 지나면 자동 삭제</td></tr>
+    <tr><td><code>ASSET_MCP_UNLOCKED_TTL_HOURS</code></td><td><code>4</code></td><td>DRM 해제본 보관 시간 (민감 파일이라 짧게)</td></tr>
+    <tr><td><code>INTERNAL_AI_URL</code></td><td>(없음 = 안내 에러)</td><td>다른 사내 AI API 베이스 URL</td></tr>
+    <tr><td><code>INTERNAL_AI_TOKEN</code></td><td>(없음)</td><td>사내 AI 호출 토큰</td></tr>
+    <tr><td><code>INTERNAL_AI_TIMEOUT_MS</code></td><td><code>120000</code></td><td>사내 AI 호출 타임아웃</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="principles"><span class="no">9</span>설계 원칙</h2>
+
+<p>툴을 추가하거나 수정할 때도 아래를 유지한다. MCP의 품질은 "에이전트가 이 툴들로 실제 업무를 해낼 수 있는가"로 측정된다.</p>
+<ul>
+  <li><b>응답은 요약된 객체로.</b> DB row·파일 내용을 통째로 반환하지 않는다. 목록 툴은 반드시 필터 + 페이지네이션.</li>
+  <li><b>에러는 행동 지침으로.</b> throw 대신 <code>{ error: "id=3 없음. list_assets로 먼저 확인하세요." }</code> — 에이전트가 읽고 스스로 복구한다.</li>
+  <li><b>대량 쓰기는 2단계.</b> dry-run 미리보기 → 사용자 확인 → apply. 부분 반영 금지.</li>
+  <li><b>툴 description이 곧 매뉴얼.</b> 에이전트가 읽는 문서다 — 언제 쓰는 툴인지, 인자가 무엇인지, 다음 단계가 무엇인지 명시한다.</li>
+  <li><b>오래 걸리는 AI 작업은 job 패턴.</b> 툴 호출이 1–2분을 넘길 수 있으면 <code>start_xxx_job</code>(job_id 즉시 반환) + <code>get_job_status</code>(폴링)로 쪼갠다.</li>
+  <li><b>결정적인 일은 코드로.</b> 조회·집계·포맷 변환은 코드가 하고, 사내 AI는 정말 생성·분석이 필요한 곳에만 쓴다 — 이중 AI는 디버깅을 어렵게 만든다.</li>
+</ul>
+
+<h2 id="checklist"><span class="no">10</span>적용 체크리스트</h2>
+
+<ul class="checklist">
+  <li><code>db.ts</code>를 실제 자산 DB 스키마·클라이언트로 교체 (타입 코드값 <code>ASSET_TYPES</code>, 수정 허용 컬럼 <code>WRITABLE_FIELDS</code> 포함)</li>
+  <li><code>internal-ai.ts</code>를 실제 사내 AI API 스펙으로 교체 — URL·인증·파일 전달 방식(multipart/base64)·동기/job 여부 확인</li>
+  <li>zod 스키마·describe를 실제 컬럼과 코드값 의미에 맞게 채우기 (§6 레시피 참고) → Inspector로 확인</li>
+  <li>엑셀 헤더 매핑(<code>headerMap</code>)을 사내 취합 양식에 맞게 조정</li>
+  <li><code>import_assets_excel</code>의 반영 블록을 DB 트랜잭션으로 감싸기</li>
+  <li>사내 인증 방식에 맞게 <code>mcpAuth</code> 조정 + 운영 인증 ON</li>
+  <li><code>/mcp-downloads</code>에 사내 인증 부착 (자산 데이터 + DRM 해제본은 민감 정보)</li>
+  <li>DRM 해제 감사 로그를 사내 감사 체계에 연동</li>
+  <li>파일 TTL 기본값(24h · 해제본 4h)이 사내 보관 정책과 맞는지 확인</li>
+  <li>MCP Inspector로 로컬 검증 → 사내 에이전트에 두 MCP 등록 → 실제 시나리오(해제→분석→취합→반영)로 검증</li>
+</ul>
+
+<p style="margin-top:48px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:13px;">
+템플릿 소스: <code>sandbox/asset-mcp-template</code> · 로컬 실행 <code>npm run dev</code> → <code>/mcp/db</code>, <code>/mcp/ai</code> · 검증 <code>npx @modelcontextprotocol/inspector</code>
+</p>
+
+</div>
